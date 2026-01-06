@@ -15,7 +15,7 @@ const settings = {
   description: 'This is a bot for managing group commands and automating task.',
   version: '3.0.5',
 
-  updateZipUrl: 'https://github.com/mruniquehacker/Knightbot-MD/archive/refs/heads/main.zip',
+  updateZipUrl: '',
 }
 // Wm Sticker
 global.packname = settings.packname
