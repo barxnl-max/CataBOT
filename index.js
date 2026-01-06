@@ -162,15 +162,6 @@ const mentioned = context?.mentionedJid || []
                 if (mek.key && mek.key.remoteJid) {
                     await sock.sendMessage(mek.key.remoteJid, {
                         text: 'hi',
-                        contextInfo: {
-                            forwardingScore: 1,
-                            isForwarded: false,
-                            forwardedNewsletterMessageInfo: {
-                                newsletterJid: '120363423464130445@newsletter',
-                                newsletterName: 'cata la li lo ? catashtroph!',
-                                serverMessageId: -1
-                            }
-                        }
                     }).catch(console.error);
                 }
             }
@@ -271,15 +262,6 @@ const mentioned = context?.mentionedJid || []
                 const botNumber = sock.user.id.split(':')[0] + '@s.whatsapp.net';
                 await sock.sendMessage(botNumber, {
                     text: `🤖 Bot Connected Successfully!\n\n⏰ Time: ${new Date().toLocaleString()}\n✅ Status: Online and Ready!\n\n✅Make sure to join below channel`,
-                    contextInfo: {
-                        forwardingScore: 1,
-                        isForwarded: true,
-                        forwardedNewsletterMessageInfo: {
-                            newsletterJid: '120363423464130445@newsletter',
-                            newsletterName: 'Catashtroph',
-                            serverMessageId: -1
-                        }
-                    }
                 });
             } catch (error) {
                 console.error('Error sending connection message:', error.message)
