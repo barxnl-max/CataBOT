@@ -1,18 +1,12 @@
-const { createCanvas, registerFont } = require('canvas')
+const { createCanvas, GlobalFonts } = require('@napi-rs/canvas')
 const fs = require('fs')
 const path = require('path')
 const os = require('os')
 const { writeExifImg } = require('../lib/exif')
 
-/* ================= FONT ================= */
-const FONT_PATH = path.join(
-  __dirname,
-  '../font/Marcellus-Regular.ttf'
-)
+const FONT_PATH = path.join(__dirname, '../font/Marcellus-Regular.ttf')
+GlobalFonts.registerFromPath(FONT_PATH, 'Marcellus')
 
-registerFont(FONT_PATH, { family: 'Marcellus' })
-
-/* ================= COLOR MAP ================= */
 const COLOR_MAP = {
   putih: '#ffffff',
   merah: '#ff0000',
@@ -25,7 +19,6 @@ const COLOR_MAP = {
   pink: '#ff69b4'
 }
 
-/* ================= COMMAND ================= */
 module.exports = async function ttpCommand(sock, chatId, message) {
   const userMessage =
     message.message?.conversation ||
@@ -53,10 +46,10 @@ module.exports = async function ttpCommand(sock, chatId, message) {
       chatId,
       {
         text:
-          'Contoh penggunaan:\n' +
+          'Contoh:\n' +
           '.ttp halo\n' +
           '.ttp halo --merah\n' +
-          'Warna yang tersedia (pink, emas, putih, merah, kuning, hijau, biru, orange, ungu)'
+          'Warna: pink, emas, putih, merah, kuning, hijau, biru, orange, ungu'
       },
       { quoted: message }
     )
@@ -68,8 +61,8 @@ module.exports = async function ttpCommand(sock, chatId, message) {
     const webpPath = await writeExifImg(
       fs.readFileSync(pngPath),
       {
-        packname: global.wm,
-        author: global.auth
+        packname: global.packname,
+        author: global.author || '@barxnl250_'
       }
     )
 
@@ -92,7 +85,6 @@ module.exports = async function ttpCommand(sock, chatId, message) {
   }
 }
 
-/* ================= RENDER ================= */
 async function renderTTP(text, colorName = 'putih') {
   const size = 512
   const padding = 40
@@ -111,9 +103,7 @@ async function renderTTP(text, colorName = 'putih') {
     lines = wrapText(ctx, text, maxWidth)
 
     const lineHeight = fontSize * 1.25
-    const totalHeight = lines.length * lineHeight
-
-    if (totalHeight <= size - padding * 2) break
+    if (lines.length * lineHeight <= size - padding * 2) break
     fontSize -= 5
   }
 
@@ -139,7 +129,6 @@ async function renderTTP(text, colorName = 'putih') {
   return outPath
 }
 
-/* ================= TEXT WRAP ================= */
 function wrapText(ctx, text, maxWidth) {
   const words = text.split(' ')
   const lines = []
@@ -147,9 +136,7 @@ function wrapText(ctx, text, maxWidth) {
 
   for (const word of words) {
     const test = line ? `${line} ${word}` : word
-    const width = ctx.measureText(test).width
-
-    if (width > maxWidth) {
+    if (ctx.measureText(test).width > maxWidth) {
       if (line) lines.push(line)
       line = word
     } else {
