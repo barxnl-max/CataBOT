@@ -41,6 +41,7 @@ const { autotypingCommand, isAutotypingEnabled, handleAutotypingForMessage, hand
 const { autoreadCommand, isAutoreadEnabled, handleAutoread } = require('./commands/autoread');
 
 // Command imports
+const iFilterCommand = require('./commands/ifilter');
 const memegen = require('./commands/memegen')
 const waifuPicsCommand = require('./commands/waifupics');
 const canvasStickerCommand = require('./commands/canvasSticker')
@@ -154,15 +155,6 @@ const { pmblockerCommand, readState: readPmBlockerState } = require('./commands/
 const settingsCommand = require('./commands/settings');
 const soraCommand = require('./commands/sora');
 const chatbotCommand = require('./commands/chatbot')
-const Completion = require('./lib/Completion')
-
-const chatbotDB = path.join(__dirname, './data/chatbot.json')
-const aiSessions = new Map()
-
-const loadChatbot = () =>
-  fs.existsSync(chatbotDB)
-    ? JSON.parse(fs.readFileSync(chatbotDB))
-    : {}
 
 // Global settings
 global.packname = settings.packname;
@@ -358,15 +350,6 @@ async function handleMessages(sock, messageUpdate, printLog) {
             await handleTicTacToeMove(sock, chatId, senderId, userMessage);
             return;
         }
-
-        /*  // Basic message response in private chat
-          if (!isGroup && (userMessage === 'hi' || userMessage === 'hello' || userMessage === 'bot' || userMessage === 'hlo' || userMessage === 'hey' || userMessage === 'bro')) {
-              await sock.sendMessage(chatId, {
-                  text: 'Hi, How can I help you?\nYou can use .menu for more info and commands.',
-                  ...channelInfo
-              });
-              return;
-          } */
         
        if (userMessage) {
     await autoresponCommand(
@@ -425,20 +408,6 @@ async function handleMessages(sock, messageUpdate, printLog) {
         if (!isPublic && !isOwnerOrSudoCheck) {
             return;
         }
-        // chatbot
- const chatbotData = loadChatbot()
-
-const chatTarget = message.key.remoteJid
-
-const chatbotActive = chatbotData[chatTarget]
-
-const text =
-
-  message.message?.conversation ||
-
-  message.message?.extendedTextMessage?.text ||
-
-  ''
 
 const isCmd = text.startsWith('.')
 
@@ -499,9 +468,6 @@ const isCmd = text.startsWith('.')
     // ================= EVAL =================
 
         switch (true) {
-              /* case userMessage.startsWith('.chatbot'):
-  await handleChatbotCommand(sock, chatId, message)
-  break */
             case userMessage.startsWith('.qc'):
 case userMessage.startsWith('.qcstc'):
 case userMessage.startsWith('.stcqc'):
@@ -510,6 +476,11 @@ case userMessage.startsWith('.qcstick'): {
   await qc(sock, chatId, message, userMessage)
   break
 }
+           case userMessage.startsWith('.ifilter'): {
+           const args = userMessage.split(' ').slice(1);
+           await iFilterCommand(sock, chatId, message, args);
+          }
+            break;
             case userMessage.startsWith('.memegen'):
             await memegen(sock, chatId, message, userMessage)
             break
@@ -593,13 +564,11 @@ break;
                 }
                 await unbanCommand(sock, chatId, message);
                 break;
-            case userMessage.startsWith('.help'):
-            case userMessage.startsWith('.menu'):
-            case userMessage.startsWith('.list'):
+            case userMessage.startsWith('.listmenu'):
                 await helpCommand(sock, chatId, message);
                 commandExecuted = true;
                 break;
-            case userMessage === '.sticker' || userMessage === '.s':
+            case userMessage === '.sfull' || userMessage === '.sticker':
                 await stickerCommand(sock, chatId, message);
                 commandExecuted = true;
                 break;
@@ -906,13 +875,6 @@ break;
                 } else {
                     await sock.sendMessage(chatId, { text: 'This command can only be used in groups.', ...channelInfo }, { quoted: message });
                 }
-                break;
-            case userMessage === '.git':
-            case userMessage === '.github':
-            case userMessage === '.sc':
-            case userMessage === '.script':
-            case userMessage === '.repo':
-                await githubCommand(sock, chatId, message);
                 break;
             case userMessage.startsWith('.antibadword'):
                 if (!isGroup) {
@@ -1288,7 +1250,7 @@ break;
                     await animeCommand(sock, chatId, message, [sub]);
                 }
                 break;
-            case userMessage === '.crop':
+            case userMessage === '.stiker' || userMessage === '.s':
                 await stickercropCommand(sock, chatId, message);
                 commandExecuted = true;
                 break;
