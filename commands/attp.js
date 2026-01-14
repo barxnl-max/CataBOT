@@ -1,4 +1,4 @@
-const { createCanvas, registerFont } = require('canvas')
+const { createCanvas, GlobalFonts } = require('@napi-rs/canvas')
 const GIFEncoder = require('gif-encoder-2')
 const fs = require('fs')
 const path = require('path')
@@ -6,10 +6,10 @@ const os = require('os')
 const { writeExifImg } = require('../lib/exif')
 
 /* ======================
-   FONT SETUP
+   FONT SETUP (NAPI-RS)
 ====================== */
 const FONT_PATH = path.join(__dirname, '../font/Marcellus-Regular.ttf')
-registerFont(FONT_PATH, { family: 'Marcellus' })
+GlobalFonts.registerFromPath(FONT_PATH, 'Marcellus')
 
 /* ======================
    MAIN COMMAND
@@ -70,7 +70,7 @@ async function renderGif(text) {
 
   encoder.start()
   encoder.setRepeat(0)
-  encoder.setDelay(90)
+  encoder.setDelay(80) // lebih smooth
   encoder.setTransparent(0x000000)
 
   let fontSize = 120
