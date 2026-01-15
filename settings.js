@@ -26,7 +26,7 @@ global.auth = `Ig: ${settings.author.replace('@', '')}`
 //Respon
 global.error = "❌️ Terjadi kesalahan, mohon coba lagi nanti!"
 global.load = "⏳️ Tunggu Sebentar, permintaan anda sedang kami proses"
-global.succes = "✅️ Berhasil"
+global.succes = "✅️ Berhasil..."
 // CHANNEL
 global.channel = "120363423464130445@newsletter"
 
