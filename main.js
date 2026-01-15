@@ -243,9 +243,12 @@ async function handleMessages(sock, messageUpdate, printLog) {
             message.message?.imageMessage?.caption?.trim() ||
             message.message?.videoMessage?.caption?.trim() ||
             '';
-           
-       
-        if (userMessage.startsWith('=>') || userMessage.startsWith('>')) {
+        
+        // INI EVAL AJG
+      const rawMessage = userMessage
+      const normalized = rawMessage.trimStart()
+
+if (normalized.startsWith('=>') || normalized.startsWith('>')) {
   if (!message.key.fromMe && !senderIsOwnerOrSudo) {
     await sock.sendMessage(
       chatId,
@@ -257,10 +260,11 @@ async function handleMessages(sock, messageUpdate, printLog) {
 
   const util = require('util')
 
-  const isArrow = userMessage.startsWith('=>')
+  const isArrow = normalized.startsWith('=>')
+
   let code = isArrow
-    ? userMessage.slice(2)
-    : userMessage.slice(1)
+    ? normalized.slice(2)
+    : normalized.slice(1)
 
   code = code.trim()
 
@@ -273,6 +277,7 @@ async function handleMessages(sock, messageUpdate, printLog) {
     return
   }
 
+  // return tidak sensitif huruf besar/kecil
   if (!isArrow && !/^return\s+/i.test(code)) {
     code = 'return ' + code
   }
@@ -287,9 +292,7 @@ async function handleMessages(sock, messageUpdate, printLog) {
       'sock',
       'message',
       'chatId',
-      `
-      ${code}
-      `
+      code
     )
 
     let result = await fn(
@@ -318,8 +321,7 @@ async function handleMessages(sock, messageUpdate, printLog) {
   }
 
   return
-        }
-        
+}
         // Only log command usage
         if (userMessage.startsWith('.')) {
             console.log(`📝 Command used in ${isGroup ? 'group' : 'private'}: ${userMessage}`);
