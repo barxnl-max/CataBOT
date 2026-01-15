@@ -243,7 +243,7 @@ const userMessage = rawText
   .trim();
         
         // INI EVAL AJG
-      const rawMessage = userMessage
+      const rawMessage = rawText
       const normalized = rawMessage.trimStart()
 
 if (normalized.startsWith('=>') || normalized.startsWith('>')) {
