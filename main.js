@@ -229,20 +229,18 @@ async function handleMessages(sock, messageUpdate, printLog) {
             }
         }
 
-        const userMessage = (
-            message.message?.conversation?.trim() ||
-            message.message?.extendedTextMessage?.text?.trim() ||
-            message.message?.imageMessage?.caption?.trim() ||
-            message.message?.videoMessage?.caption?.trim() ||
-            message.message?.buttonsResponseMessage?.selectedButtonId?.trim() ||
-            ''
-        ).toLowerCase().replace(/\.\s+/g, '.').trim();
-        // Preserve raw message for commands like .tag that need original casing
-        const rawText = message.message?.conversation?.trim() ||
-            message.message?.extendedTextMessage?.text?.trim() ||
-            message.message?.imageMessage?.caption?.trim() ||
-            message.message?.videoMessage?.caption?.trim() ||
-            '';
+        const rawText =
+  message.message?.conversation?.trim() ||
+  message.message?.extendedTextMessage?.text?.trim() ||
+  message.message?.imageMessage?.caption?.trim() ||
+  message.message?.videoMessage?.caption?.trim() ||
+  message.message?.buttonsResponseMessage?.selectedButtonId?.trim() ||
+  '';
+
+const userMessage = rawText
+  .toLowerCase()
+  .replace(/\.\s+/g, '.')
+  .trim();
         
         // INI EVAL AJG
       const rawMessage = userMessage
