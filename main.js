@@ -41,6 +41,7 @@ const { autotypingCommand, isAutotypingEnabled, handleAutotypingForMessage, hand
 const { autoreadCommand, isAutoreadEnabled, handleAutoread } = require('./commands/autoread');
 
 // Command imports
+const pinterest = require('./commands/pinterest')
 const iFilterCommand = require('./commands/ifilter');
 const memegen = require('./commands/memegen')
 const waifuPicsCommand = require('./commands/waifupics');
@@ -513,7 +514,10 @@ case userMessage.startsWith('.qcstick'): {
     await waifuPicsCommand(sock, chatId, message, args, true);
 }
 break;
-
+            case userMessage.startsWith('.pinterest'):
+            case userMessage.startsWith('.pindl'):
+            await pinterest(sock, chatId, message, userMessage)
+            break
 case userMessage.startsWith('.waifu'): {
     const args = userMessage.split(' ').slice(1);
     await waifuPicsCommand(sock, chatId, message, args, false);
