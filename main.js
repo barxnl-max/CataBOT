@@ -41,6 +41,7 @@ const { autotypingCommand, isAutotypingEnabled, handleAutotypingForMessage, hand
 const { autoreadCommand, isAutoreadEnabled, handleAutoread } = require('./commands/autoread');
 
 // Command imports
+const AudioFilter = require('./commands/audioFilter')
 const pinterest = require('./commands/pinterest')
 const iFilterCommand = require('./commands/ifilter');
 const memegen = require('./commands/memegen')
@@ -487,6 +488,11 @@ case userMessage.startsWith('.qcstick'): {
             case userMessage.startsWith('.ifilter'): {
             const args = userMessage.split(' ').slice(1);
             await iFilterCommand(sock, chatId, message, args);
+            }
+            break;
+            case userMessage.startsWith('.afilter'): {
+            const args = userMessage.split(' ').slice(1);
+            await AudioFilter(sock, chatId, message, args);
             }
             break;
             case userMessage.startsWith('.memegen'):
