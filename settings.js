@@ -2,7 +2,7 @@ const settings = {
   packname: 'Catashtroph',
   author: '@barxnl250_',
 
-  botName: 'Cata Bot',
+  botName: 'CataBot',
   botOwner: 'Akbar',
   ownerNumber: '6282198571732',
 
@@ -17,7 +17,7 @@ const settings = {
 
   updateZipUrl: '',
 }
-// Wm Sticker
+// Wm Stickerr
 global.packname = settings.packname
 global.author = settings.author
 global.wm = settings.packname
