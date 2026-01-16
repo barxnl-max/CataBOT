@@ -13,7 +13,7 @@ const settings = {
   storeWriteInterval: 10000,
 
   description: 'This is a bot for managing group commands and automating task.',
-  version: '3.0.5',
+  version: '3.0.6',
 
   updateZipUrl: '',
 }
