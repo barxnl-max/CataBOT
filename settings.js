@@ -4,7 +4,7 @@ const settings = {
 
   botName: 'Cata Bot',
   botOwner: 'Akbar',
-  ownerNumber: '62821985717352',
+  ownerNumber: '6282198571732',
 
   giphyApiKey: 'qnl7ssQChTdPjsKta2Ax2LMaGXz303tq',
   commandMode: 'private',
