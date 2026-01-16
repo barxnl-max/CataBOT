@@ -2,7 +2,7 @@ const settings = {
   packname: 'Catashtroph',
   author: '@barxnl250_',
 
-  botName: 'CataBot',
+  botName: 'Cata Bot',
   botOwner: 'Akbar',
   ownerNumber: '6282198571732',
 
