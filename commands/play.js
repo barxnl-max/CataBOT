@@ -1,63 +1,83 @@
-const yts = require('yt-search');
-const axios = require('axios');
+const yts = require("yt-search")
+const ytmp3 = require("../lib/ytmp3")
 
 async function playCommand(sock, chatId, message) {
-    try {
-        const text = message.message?.conversation || message.message?.extendedTextMessage?.text;
-        const searchQuery = text.split(' ').slice(1).join(' ').trim();
-        
-        if (!searchQuery) {
-            return await sock.sendMessage(chatId, { 
-                text: "What song do you want to download?"
-            });
-        }
+  try {
+    const text =
+      message.message?.conversation ||
+      message.message?.extendedTextMessage?.text ||
+      ""
 
-        // Search for the song
-        const { videos } = await yts(searchQuery);
-        if (!videos || videos.length === 0) {
-            return await sock.sendMessage(chatId, { 
-                text: "No songs found!"
-            });
-        }
+    const args = text.split(" ").slice(1).join(" ").trim()
 
-        // Send loading message
-        await sock.sendMessage(chatId, {
-            text: "_Please wait your download is in progress_"
-        });
-
-        // Get the first video result
-        const video = videos[0];
-        const urlYt = video.url;
-
-        // Fetch audio data from API
-        const response = await axios.get(`https://apis-keith.vercel.app/download/dlmp3?url=${urlYt}`);
-        const data = response.data;
-
-        if (!data || !data.status || !data.result || !data.result.downloadUrl) {
-            return await sock.sendMessage(chatId, { 
-                text: "Failed to fetch audio from the API. Please try again later."
-            });
-        }
-
-        const audioUrl = data.result.downloadUrl;
-        const title = data.result.title;
-
-        // Send the audio
-        await sock.sendMessage(chatId, {
-            audio: { url: audioUrl },
-            mimetype: "audio/mpeg",
-            fileName: `${title}.mp3`
-        }, { quoted: message });
-
-    } catch (error) {
-        console.error('Error in song2 command:', error);
-        await sock.sendMessage(chatId, { 
-            text: "Download failed. Please try again later."
-        });
+    if (!args) {
+      return await sock.sendMessage(
+        chatId,
+        { text: "🎵 Masukkan judul lagu atau link YouTube\n\nContoh:\n.play until i found you\n.ytmp3 https://youtu.be/xxxx" },
+        { quoted: message }
+      )
     }
+
+    // ⏳ loading
+    await sock.sendMessage(chatId, {
+      react: { text: "⏳", key: message.key }
+    })
+
+    let ytUrl = args
+
+    // 🔎 kalau bukan link → search
+    if (!/^https?:\/\//i.test(args)) {
+      const search = await yts(args)
+      if (!search.videos || search.videos.length === 0) {
+        return await sock.sendMessage(
+          chatId,
+          { text: "❌ Lagu tidak ditemukan" },
+          { quoted: message }
+        )
+      }
+      ytUrl = search.videos[0].url
+    }
+
+    // 🎧 download mp3 (2–3 MB)
+    const res = await ytmp3(ytUrl)
+
+    if (!res.status) {
+      return await sock.sendMessage(
+        chatId,
+        { text: "❌ Gagal download audio\n" + res.error },
+        { quoted: message }
+      )
+    }
+
+    const caption =
+      `🎵 *${res.title}*\n` +
+      `🎧 ${res.bitrate} | ${res.size}\n\n` +
+      `Downloaded by bot\n` +
+      `📸 Instagram: @barxnl250_`
+
+    await sock.sendMessage(
+      chatId,
+      {
+        audio: res.buffer,
+        mimetype: "audio/mpeg",
+        fileName: res.title + ".mp3",
+        caption
+      },
+      { quoted: message }
+    )
+
+    await sock.sendMessage(chatId, {
+      react: { text: "✅", key: message.key }
+    })
+
+  } catch (e) {
+    console.error("playCommand error:", e)
+    await sock.sendMessage(
+      chatId,
+      { text: "❌ Terjadi kesalahan, coba lagi nanti" },
+      { quoted: message }
+    )
+  }
 }
 
-module.exports = playCommand; 
-
-/*Powered by KNIGHT-BOT*
-*Credits to Keith MD*`*/
+module.exports = playCommand
